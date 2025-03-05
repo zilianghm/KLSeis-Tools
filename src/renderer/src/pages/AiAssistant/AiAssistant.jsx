@@ -59,14 +59,14 @@ const getModelParamsOptions = (
     const aiModelList = [
         {
             name: 'deepseekR1',
-            token: 'sk-jftgdjnlahvmhnxkdoludzfpmqtyayrkmrhlbozmksjbdzbk',
+            token: 'sk-ezpbknqqkhcexchvgnmatcwscypqvnbrwodrylimkylhavbi',
             modalName: 'Pro/deepseek-ai/DeepSeek-R1',
             userId: '',
             fetchUrl: 'https://api.siliconflow.cn/v1/chat/completions',
         },
         {
             name: 'deepseekV3',
-            token: 'sk-jftgdjnlahvmhnxkdoludzfpmqtyayrkmrhlbozmksjbdzbk',
+            token: 'sk-ezpbknqqkhcexchvgnmatcwscypqvnbrwodrylimkylhavbi',
             modalName: 'Pro/deepseek-ai/DeepSeek-V3',
             userId: '',
             fetchUrl: 'https://api.siliconflow.cn/v1/chat/completions',
@@ -263,7 +263,7 @@ export const AiAssistant = () => {
 
     const { aiSessionList, setAiSessionList, db } = useContextConsumer() // 历史会话总列表
     const [aiCurrentSessionList, setAiCurrentSessionList] = useState([]) // 当前会话列表
-    const [currentAiModelName, setCurrentAiModelName] = useState('deepseekR1') // 当前使用大模型的前端自定义名称，默认模型为 deepseekR1
+    const [currentAiModelName, setCurrentAiModelName] = useState('tencentHybrid') // 当前使用大模型的前端自定义名称，默认模型为 tencentHybrid
 
     const chatContainerRef = useRef(null) // 添加会话列表的引用，用于手动实现滚动条最底下
     const [userScrolled, setUserScrolled] = useState(false) // 添加用户是否滚动的状态
