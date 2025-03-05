@@ -1,0 +1,248 @@
+.configResources {
+    .top-bar {
+        height: 80px;
+        border-bottom: 1px solid var(--klseis-color7);
+        -webkit-app-region: drag; // 设置为鼠标可拖拽，并且继承系统窗口标题栏特性
+        user-select: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        > .top-bar-right {
+            padding-right: 30px;
+            > .languageIcon {
+                -webkit-app-region: no-drag;
+                margin-left: 33px;
+                width: 22px;
+                height: 22px;
+                cursor: pointer;
+                position: relative;
+                top: 0.6px;
+                color: var(--klseis-color6);
+                &:hover {
+                    color: var(--klseis-color1);
+                }
+            }
+
+            > .settingIcon {
+                margin-left: 42px;
+                width: 20px;
+                height: 20px;
+                color: var(--klseis-color6);
+                -webkit-app-region: no-drag;
+                cursor: pointer;
+                &:hover,
+                &.settingIcon-activation {
+                    color: var(--klseis-color1);
+                }
+            }
+            > .minimizeIcon {
+                margin-left: 32px;
+                width: 24px;
+                height: 24px;
+                color: var(--klseis-color6);
+                -webkit-app-region: no-drag;
+                position: relative;
+                top: 3px;
+                cursor: pointer;
+                &:hover {
+                    color: var(--klseis-color1);
+                }
+            }
+            > .closeIcon {
+                margin-left: 31px;
+                width: 24px;
+                height: 24px;
+                color: var(--klseis-color6);
+                -webkit-app-region: no-drag;
+                position: relative;
+                top: 3px;
+                cursor: pointer;
+                &:hover {
+                    color: var(--klseis-color1);
+                }
+            }
+        }
+    }
+    .bottom-content {
+        display: flex;
+        overflow: hidden;
+        .bottom-content-left {
+            width: 100%;
+            height: calc(100vh - 80px);
+            transition: width 0.5s ease;
+            .InstallationPath {
+                width: 360px;
+                margin: 0 auto;
+                margin-top: 60px;
+                padding: 12px 20px;
+                border: 1px solid var(--klseis-color3);
+                border-radius: 6px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                .one {
+                    margin-right: 10px;
+                }
+                .three {
+                    border-left: 1px solid var(--klseis-color3);
+                    display: inline-block;
+                    width: 35px;
+                    text-align: end;
+                    cursor: pointer;
+                    &:hover {
+                        color: var(--klseis-color1);
+                    }
+                }
+            }
+            .firstInstall {
+                margin: 0 auto;
+                width: 430px;
+                margin-top: 30px;
+                .content-zip {
+                    display: flex;
+                    align-items: center;
+                    .select-zipfile {
+                        width: 300px;
+                        margin-bottom: 20px;
+                        
+                        .arco-select-view {
+                            border: 1px solid var(--klseis-color3);
+                            height: 48px;
+                            line-height: 47px;
+                            border-radius: 5px;
+                            background-color: #fff;
+                        }
+                    }
+                    .decompressionBtn {
+                        margin-left: 16px;
+                        height: 46px;
+                        position: relative;
+                        top: -11px;
+                        background-color: var(--klseis-color22);
+                        border-radius: 5px;
+                        width: 120px;
+                        text-align: center;
+                        line-height: 44px;
+                        color: var(--klseis-main-backgroud-color);
+                        &:hover {
+                            background-color: var(--klseis-color23);
+                        }
+                    }
+                }
+
+                .closeBtn {
+                    color: var(--klseis-color15);
+                    font-weight: 500;
+                    text-align: center;
+                    margin-top: 30px;
+                    &:hover {
+                        color: var(--klseis-color11);
+                    }
+                }
+            }
+            .logo {
+                margin: 100px auto 0;
+                width: 160px;
+
+                .logoImg {
+                    width: 160px;
+                    position: relative;
+                    left: -3px;
+                }
+                .logoName {
+                    text-align: center;
+                    font-size: 24px;
+                    font-weight: 900;
+                    position: relative;
+                    left: 8px;
+                    top: 8px;
+                }
+            }
+            .installationAddressBtn {
+                display: block;
+                margin: 80px auto 0;
+                width: 160px;
+                height: 52px;
+                background-color: var(--klseis-color20);
+                color: var(--klseis-main-backgroud-color);
+                font-size: 15px;
+                font-weight: 900;
+                border-radius: 5px;
+                box-shadow: rgba(4, 41, 163, 0.87) 0px 25px 30px -20px;
+                position: relative;
+                left: 14px;
+                cursor: pointer;
+                &:hover {
+                    background-color: var(--klseis-color21);
+                }
+                > .isFindFolder {
+                    height: 50px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    .arco-spin-icon {
+                        top: -1px;
+                        left: 4px;
+                        svg {
+                            color: var(--klseis-main-backgroud-color);
+                        }
+                    }
+                }
+            }
+            .btnTips {
+                width: 300px;
+                text-align: center;
+                margin: 0 auto;
+                line-height: 1.9;
+                position: relative;
+                left: 56px;
+                top: 60px;
+                color: var(--klseis-color15);
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                .arco-spin {
+                    width: auto !important;
+                    margin-left: 22px;
+                    height: auto;
+                }
+                &.noHavZipPath {
+                    left: 6px;
+                    background-color: var(--klseis-color3);
+                    text-align: center;
+                    padding: 12px 20px;
+                    border-radius: 6px;
+                    width: 320px;
+                    color: var(--klseis-color6);
+                    cursor: pointer;
+                    &:hover {
+                        color: var(--klseis-color12);
+                    }
+                }
+            }
+        }
+        .bottom-content-right {
+            width: 0;
+            height: calc(100vh - 80px);
+            transition: width 0.5s ease;
+            > .packageManagement {
+                display: none;
+            }
+        }
+
+        &.bottom-content-right-open {
+            .bottom-content-left {
+                width: 50%;
+            }
+            .bottom-content-right {
+                width: 50%;
+                background-color: var(--klseis-secondary1-backgroud-color);
+                border-left: 1px solid var(--klseis-color8);
+                padding: 0 10px;
+                > .packageManagement {
+                    display: block;
+                }
+            }
+        }
+    }
+}

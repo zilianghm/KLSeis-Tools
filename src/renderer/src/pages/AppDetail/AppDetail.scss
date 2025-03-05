@@ -1,0 +1,158 @@
+.appDetail {
+    padding: 0 20px 20px;
+    .breadcrumb {
+        position: sticky;
+        height: 66px;
+        top: 0;
+        z-index: 9;
+        background-color: var(--klseis-secondary1-backgroud-color);
+        .arco-breadcrumb {
+            width: 50%;
+            position: relative;
+            top: 19px;
+        }
+        .arco-breadcrumb-item {
+            cursor: pointer;
+            color: var(--klseis-color15);
+            &:hover {
+                color: var(--klseis-color1);
+            }
+            &:last-child {
+                color: var(--klseis-color6);
+            }
+            .homeIcon {
+                width: 18px;
+                height: 18px;
+                color: var(--klseis-color15) !important;
+                margin-right: 7px;
+                &:hover {
+                    color: var(--klseis-color1) !important;
+                }
+            }
+        }
+        
+    }
+    .top {
+        position: sticky;
+        top: 66px;
+        z-index: 10;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: var(--klseis-main-backgroud-color);
+        padding: 16px 20px;
+        border-radius: 8px;
+        box-shadow: rgba(197, 197, 197, 0.6) 0px 25px 20px -20px;
+        .top-left {
+            display: flex;
+            padding: 8px 6px;
+            align-items: center;
+            .top-left-image {
+                width: 74px;
+                height: 74px;
+                border-radius: 6px;
+                overflow: hidden;
+                margin-right: 14px;
+                border: 1px solid var(--klseis-color9);
+                img {
+                    width: 74px;
+                }
+            }
+            .top-left-right {
+                margin-left: 7px;
+                .top-left-title {
+                    font-size: 17px;
+                    font-weight: 900;
+                    position: relative;
+                    top: -8px;
+                }
+                .top-left-descri {
+                    position: relative;
+                    top: 7.5px;
+                    left: 1px;
+                    color: var(--klseis-color6);
+                    width: 350px;
+                    display: -webkit-box;
+                    overflow: hidden;
+                    -webkit-line-clamp: 1;
+                    line-clamp: 1;
+                    -webkit-box-orient: vertical;
+                }
+            }
+        }
+        .top-right {
+            padding-right: 12px;
+            .top-left-btn {
+                width: 56px;
+                height: 38px;
+                border-radius: 6px;
+                box-shadow:
+                    rgba(0, 2, 80, 0.25) 0px 20px 25px -5px,
+                    rgba(8, 1, 71, 0.08) 0px 10px 10px -5px;
+                svg {
+                    font-size: 24px;
+                    color: var(--klseis-main-backgroud-color);
+                    position: relative;
+                    top: 1.5px;
+                }
+            }
+        }
+    }
+    .screenshot {
+        padding: 25px 6px 23px;
+        display: flex;
+        overflow-x: overlay;
+        box-sizing: border-box;
+        &::-webkit-scrollbar {
+            height: 0px !important;
+            background-color: transparent;
+            cursor: pointer;
+        }
+        &::-webkit-scrollbar-thumb {
+            background-color: var(--klseis-color14);
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .screenshot-item {
+            margin-right: 12px;
+            height: 100px;
+            width: 190px;
+            border: 1px solid var(--klseis-color9);
+            border-radius: 5px;
+            &:last-child {
+                margin-right: 0;
+            }
+            img {
+                width: 200px;
+                height: 100px;
+            }
+        }
+    }
+    .appDetail-content {
+        .arco-tabs-header-nav-line {
+            &::before {
+                background-color: var(--klseis-color8);
+            }
+        }
+        .arco-tabs-content {
+            padding: 26px 0 0;
+            .arco-tabs-pane {
+                padding-right: 14px;
+                padding-left: 14px;
+                line-height: 1.8;
+                letter-spacing: 0.6px;
+                color: var(--klseis-color12);
+                > .details-content {
+                    p {
+                        margin-bottom: 16px;
+                        letter-spacing: 1px;
+                        line-height: 1.8;
+                    }
+                }
+            }
+            .arco-tabs-header-title-text {
+                color: var(--klseis-color6);
+            }
+        }
+    }
+}

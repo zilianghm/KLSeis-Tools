@@ -1,0 +1,50 @@
+[
+    {
+        "app_id": "10.1",
+        "app_name": "层析静校正",
+        "app_name_en": "Land seismic acquisition design",
+        "description": "Data driven seismic acquisition design",
+        "logo": "/img/层析静校正-256.png",
+        "iconBase64": "",
+        "version": [
+            {
+                "app_id": "1.2.1",
+                "title": "0.3.3",
+                "zipPath": "/resources/zip/",
+                "installedPath": ""
+            }
+        ]
+    },
+    {
+        "app_id": "10.2",
+        "app_name": "初至拾取",
+        "app_name_en": "Data driven seismic acquisition design",
+        "description": "Data driven seismic acquisition design",
+        "logo": "/img/初至拾取-256.png",
+        "iconBase64": "",
+        "version": [
+            {
+                "app_id": "1.2.1",
+                "title": "0.3.3",
+                "zipPath": "/resources/zip/",
+                "installedPath": ""
+            }
+        ]
+    },
+    {
+        "app_id": "10.3",
+        "app_name": "近地表调查",
+        "app_name_en": "Towing seismic acquisition design",
+        "description": "Data driven seismic acquisition design",
+        "logo": "/img/近地表调查-256.png",
+        "iconBase64": "",
+        "version": [
+            {
+                "app_id": "1.2.1",
+                "title": "0.3.3",
+                "zipPath": "/resources/zip/",
+                "installedPath": ""
+            }
+        ]
+    }
+]

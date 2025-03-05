@@ -1,0 +1,16 @@
+singleQuote: true
+trailingComma: es5
+width: 120
+printWidth: 120
+tabWidth: 4
+useTabs: false
+semi: false
+quoteProps: "as-needed"
+jsxSingleQuote: true
+bracketSpacing: true
+bracketSameLine: false
+jsxBracketSameLine: false
+arrowParens: "avoid"
+requirePragma: false
+insertPragma: false
+endOfLine: 'lf'

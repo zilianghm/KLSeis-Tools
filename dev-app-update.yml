@@ -1,0 +1,3 @@
+provider: generic
+url: http://39.98.219.240:8941/package/
+updaterCacheDirName: KLSeis2025-updater

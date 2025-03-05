@@ -1,0 +1,55 @@
+appId: com.electron.app
+productName: KLSeis2025
+files:
+    - '!**/.vscode/*'
+    - '!src/*'
+    - '!electron.vite.config.{js,ts,mjs,cjs}'
+    - '!{.eslintignore,.eslintrc.cjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
+    - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
+asar: false
+win:
+    executableName: KLSeis2025
+    icon: build/icons/icon.ico # Windows 平台的图标
+    # requestedExecutionLevel: requireAdministrator # 自动生成带有请求管理员权限的清单文件
+    target:
+        - nsis # 使用 NSIS 作为 Windows 安装程序
+nsis:
+    artifactName: ${name}-${version}-setup.${ext} # 安装面板名称
+    shortcutName: ${productName} # 快捷方式面板名称
+    uninstallDisplayName: ${productName} # 卸载面板名称
+    deleteAppDataOnUninstall: true # 卸载时，自动清空用户数据
+    createDesktopShortcut: always # 创建桌面快捷方式
+    oneClick: false # 是否一键安装，允许用户可选安装路径
+    perMachine: true # 是否允许全局安装
+    allowElevation: true # 允许请求管理员权限
+    allowToChangeInstallationDirectory: true # 允许用户更改安装目录
+    differentialPackage: false # 关闭增量更新
+    # include: "installer.nsh" # 指定自定义 NSIS 脚本的路径
+mac:
+    icon: build/icons/icon.icns # macOS 平台的图标
+    target:
+        - dmg # 使用 DMG 作为 macOS 安装程序
+    entitlementsInherit: build/entitlements.mac.plist
+    extendInfo:
+        - NSCameraUsageDescription: Application requests access to the device's camera.
+        - NSMicrophoneUsageDescription: Application requests access to the device's microphone.
+        - NSDocumentsFolderUsageDescription: Application requests access to the user's Documents folder.
+        - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
+    notarize: false
+dmg:
+    artifactName: ${name}-${version}.${ext}
+linux:
+    target:
+        - AppImage
+        - snap
+        - deb
+    maintainer: electronjs.org
+    category: Utility
+appImage:
+    artifactName: ${name}-${version}.${ext}
+npmRebuild: false
+publish:
+    - provider: generic
+      url: http://39.98.219.240:8941/package/ # 阿里云 - 在线更新地址
+    - provider: generic
+      url: http://10.88.247.18:8083/package/  # 内网 - 在线更新地址

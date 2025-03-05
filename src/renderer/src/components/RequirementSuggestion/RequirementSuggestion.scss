@@ -1,0 +1,134 @@
+.requirementSuggestion {
+    .requirementSuggestion-content {
+        .requirementSuggestion-content-item {
+            display: flex;
+            border-bottom: 1px solid var(--klseis-color8);
+            margin-bottom: 22px;
+            margin-top: 4px;
+            .requirementSuggestion-content-left {
+                width: 32px;
+                height: 32px;
+                background-color: var(--klseis-color21);
+                color: var(--klseis-main-backgroud-color);
+                font-size: 14px;
+                // border: 1px solid var(--klseis-color14);
+                border-radius: 19px;
+                overflow: hidden;
+                margin-right: 20px;
+                flex-shrink: 0;
+                text-align: center;
+                line-height: 31px;
+                img {
+                    width: 31px;
+                }
+                &.requirementSuggestion-content-left-anonymous {
+                    background: none;
+                    img {
+                        width: 31px;
+                    }
+                }
+            }
+            .requirementSuggestion-content-right {
+                position: relative;
+                top: -2px;
+                .content-item-useInfo {
+                    margin-bottom: 9px;
+                    .useInfo-name {
+                        color: var(--klseis-color21);
+                        margin-right: 26px;
+                        &.useInfo-name-anonymous {
+                            color: var(--klseis-color15);
+                        }
+                    }
+                    .useInfo-time {
+                        color: var(--klseis-color15);
+                    }
+                }
+                .content-item-text {
+                    margin-bottom: 12px;
+                    letter-spacing: 1px;
+                }
+                .content-item-screenshot {
+                    margin-top: 16px;
+                    margin-bottom: 20px;
+                    .screenshot-item {
+                        width: 100px;
+                        height: 60px;
+                        margin-right: 12px;
+                        background-color: var(--klseis-color7);
+                        border: 1px solid var(--klseis-color8);
+                        &:last-child {
+                            margin-right: 0;
+                        }
+                        img {
+                            width: 100px;
+                            height: 60px;
+                        }
+                    }
+                }
+                .content-item-btn {
+                    display: flex;
+                    margin-bottom: 18px;
+                    .content-item-left {
+                        display: flex;
+                        align-items: center;
+                        .thumbs-up {
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            margin-right: 30px;
+                            cursor: pointer;
+                            .thumbs3 {
+                                width: 18px;
+                                height: 18px;
+                                margin-right: 6px;
+                                color: var(--klseis-color15);
+                            }
+                            .thumbs-up-number {
+                                font-size: 16px;
+                                color: var(--klseis-color15);
+                            }
+                            &:hover {
+                                .thumbs3,
+                                .thumbs-up-number {
+                                    color: var(--klseis-color22);
+                                }
+                            }
+                        }
+                        .reply {
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            position: relative;
+                            top: 1px;
+                            cursor: pointer;
+                            .reply-icon {
+                                width: 22px;
+                                height: 22px;
+                                margin-right: 10px;
+                                color: var(--klseis-color15);
+                            }
+                            .reply-text {
+                                color: var(--klseis-color15);
+                                position: relative;
+                                top: -1.5px;
+                            }
+                            &:hover {
+                                .reply-icon,
+                                .reply-text {
+                                    color: var(--klseis-color20);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .requirementSuggestion-content-none {
+            color: var(--klseis-color15);
+            font-size: 16px;
+            text-align: center;
+            margin-top: 20px;
+        }
+    }
+}

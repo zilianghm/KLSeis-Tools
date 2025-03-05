@@ -1,0 +1,70 @@
+.searchPopover {
+    width: 360px !important;
+    max-width: 360px !important;
+    .arco-popover-content {
+        width: 100%;
+        .searchPopoverContent {
+            min-height: 200px;
+            max-height: 500px; // 设置最大高度为500px
+            overflow-y: auto; // 设置溢出内容为自动
+            .searchPopoverContent-title {
+                padding: 0px 15px;
+                margin-top: 6px;
+                margin-bottom: 10px;
+                .searchPopoverContent-title-text {
+                    font-size: 15px;
+                    color: var(--klseis-color15);
+                    font-weight: 400;
+                    padding-bottom: 14px;
+                    border-bottom: 1px solid var(--klseis-color8);
+                }
+            }
+            .searchPopoverContent-list {
+                margin-bottom: 10px;
+                .searchPopoverContent-list-item {
+                    padding: 10px 10px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    cursor: pointer;
+                    &:hover {
+                        background-color: var(--klseis-color7);
+                        border-radius: 4px;
+                        .right {
+                            display: block !important;
+                        }
+                    }
+                    .left {
+                        display: flex;
+                        align-items: center;
+                        .searchPopoverContent-list-item-icon {
+                            width: 36px;
+                            margin-right: 16px;
+                        }
+                        .searchPopoverContent-list-item-text {
+                            font-size: 15px;
+                            color: #000;
+                            font-weight: 500;
+                            position: relative;
+                            top: 0.5px;
+                            width: 190px;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                        }
+                    }
+                    .right {
+                        display: none;
+                        padding-right: 6px;
+                        .searchPopoverContent-list-item-start-icon {
+                            font-size: 22px;
+                            color: var(--klseis-color17);
+                            position: relative;
+                            top: 0.5px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,61 @@
+.userLogin {
+    margin: 0px auto;
+    padding: 6px 10px 0;
+    text-align: center;
+    background-color: #fff;
+    .title {
+        display: flex;
+        justify-content: center;
+        h2 {
+            cursor: pointer;
+            margin-bottom: 30px;
+            color: #999;
+            font-size: 17px;
+            font-weight: 500;
+            &:last-child {
+                margin-left: 30px;
+            }
+            &.active-h2 {
+                color: #333;
+            }
+            &.active-h2::after {
+                content: '';
+                display: block;
+                width: 30px;
+                height: 3px;
+                background-color: #305df0;
+                position: relative;
+                top: 5px;
+                left: 20px;
+            }
+        }
+    }
+
+    .userLogin-form {
+        .arco-form-item {
+            // margin-bottom: 24px;
+            .arco-input,
+            .arco-cascader-view-input {
+                line-height: 2.3;
+                font-size: 15px;
+            }
+        }
+        .arco-form-message {
+            margin-bottom: 10px;
+        }
+        .submit {
+            margin-top: 10px;
+            .arco-btn {
+                height: 42px;
+            }
+        }
+        .arco-cascader-view {
+            height: 42px;
+        }
+        .arco-cascader {
+            .arco-cascader-view-value {
+                line-height: 38px;
+            }
+        }
+    }
+}

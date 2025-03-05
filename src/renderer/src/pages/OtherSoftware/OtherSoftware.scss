@@ -1,0 +1,188 @@
+.software-container {
+    padding-top: 3px;
+    .klseis-app-title,
+    .system-app-title {
+        border-bottom: 1px solid #e0e0e0;
+        padding-bottom: 22px;
+        display: flex;
+        .klseis-app-import {
+            cursor: pointer;
+            width: 100px;
+            height: 40px;
+            line-height: 38px;
+            text-align: center;
+            border-radius: 6px;
+            background-color: #2674e9;
+            color: #fff;
+            margin-right: 20px;
+            &:hover {
+                background-color: #195cc0;
+            }
+        }
+        .klseis-app-activation-icon {
+            margin-right: 10px;
+            position: relative;
+            top: 1px;
+            font-size: 16px;
+        }
+        .klseis-app-activation {
+            cursor: pointer;
+            width: 130px;
+            height: 40px;
+            line-height: 37px;
+            text-align: center;
+            border-radius: 6px;
+            background-color: #00b487;
+            color: #fff;
+            &:hover {
+                background-color: #017256;
+            }
+        }
+        .klseis-app-activation-false {
+            background-color: none;
+            cursor: pointer;
+            width: 130px;
+            height: 40px;
+            line-height: 37px;
+            text-align: center;
+            border-radius: 6px;
+            border: 1px solid #c7c7c7;
+        }
+    }
+
+    .system-app-title {
+        margin-top: 40px;
+    }
+
+    .software-list,
+    .software-list-start {
+        margin-top: 26px;
+        margin-bottom: 26px;
+        height: 500px;
+        overflow-y: auto;
+        &::-webkit-scrollbar {
+            width: 6px !important;
+            background-color: transparent;
+        }
+        &::-webkit-scrollbar-thumb {
+            background-color: var(--klseis-color14);
+            border-radius: 6px;
+        }
+        .software-item {
+            margin-bottom: 12px;
+            background-color: #fff;
+            padding: 12px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: box-shadow 0.3s ease;
+            &:hover {
+                box-shadow:
+                    rgba(0, 0, 0, 0.1) 0px 15px 25px,
+                    rgba(0, 0, 0, 0.05) 0px 5px 10px;
+            }
+            .software-item-left {
+                display: flex;
+                align-items: center;
+
+                .exe-icon-bd {
+                    width: 48px;
+                    height: 48px;
+                    border-radius: 4px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    margin-right: 18px;
+                    img {
+                        width: 45px;
+                        height: 45px;
+                    }
+                }
+                .software-info {
+                    .exe-name {
+                        color: #000;
+                        font-size: 14px;
+                        font-weight: 500;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
+                }
+            }
+            .software-item-right {
+                display: flex;
+                align-items: center;
+                .arco-cascader-wrapper {
+                    margin-bottom: 0;
+                }
+                .arco-cascader-addbefore {
+                    color: #666;
+                }
+                .arco-cascader-view {
+                    border-color: #e6e6e6;
+                    border-left: none;
+                }
+                .arco-cascader-view-value {
+                    color: #005837;
+                }
+                .software-item-drag-icon {
+                    cursor: pointer;
+                    font-size: 20px;
+                    color: #969696;
+                    &:hover {
+                        color: #000;
+                    }
+                }
+                // .software-item-right-setting-grouping {
+                //     padding: 0 14px;
+                //     height: 32px;
+                //     line-height: 29px;
+                //     border-radius: 4px;
+                //     border: 1px dashed #9fbeec;
+                //     color: #104088;
+                //     cursor: pointer;
+
+                //     &:hover {
+                //         border-color: #195cc0;
+                //     }
+                // }
+            }
+        }
+    }
+    .software-list-start {
+        display: flex;
+        flex-flow: row wrap;
+        align-items: center;
+        align-content: flex-start;
+        .software-item {
+            width: 194px;
+            margin-right: 20px;
+            &:nth-child(3n) {
+                margin-right: 0; // 每行的第三个元素去掉右边距
+            }
+        }
+        .software-info {
+            width: 90px;
+        }
+    }
+}
+
+.software-item-popover {
+    width: 160px;
+    .software-item-popover-delete-btn {
+        line-height: 32px;
+        text-align: center;
+        color: #fff;
+        cursor: pointer;
+        background-color: #c52929;
+        border-radius: 4px;
+        margin-top: 16px;
+        margin-bottom: 6px;
+        &:hover {
+            color: #9b1a1a;
+        }
+    }
+}

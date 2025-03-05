@@ -1,0 +1,125 @@
+.requirementSuggestion-top {
+    .input-box {
+        background-color: var(--klseis-color13);
+        margin-top: 5px;
+        margin-bottom: 27px;
+        border-radius: 5px;
+        transition: all 0.5s ease;
+        border: 2px solid var(--klseis-color13);
+        &.input-box-focus {
+            background-color: var(--klseis-secondary1-backgroud-color);
+            border: 2px solid var(--klseis-color1);
+            &:hover {
+                background-color: var(--klseis-secondary1-backgroud-color);
+            }
+            .rich-input {
+                // height: 96px;
+                color: var(--klseis-logoName-color);
+            }
+        }
+        .rich-input {
+            // height: 48px;
+            padding: 10px 15px;
+            transition: all 0.5s ease;
+            color: var(--klseis-color15);
+        }
+        .action-box {
+            height: 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            .action-box-left {
+                padding: 0 10px;
+                .emoji-btn,
+                .image-btn {
+                    width: 34px;
+                    height: 34px;
+                    padding: 6px;
+                    color: var(--klseis-color15);
+                    cursor: pointer;
+                    position: relative;
+                    top: 3px;
+                    &:hover {
+                        color: var(--klseis-color11);
+                    }
+                }
+                .emoji-btn {
+                    margin-right: 15px;
+                }
+                .image-btn {
+                    width: 35px;
+                    height: 35px;
+                    position: relative;
+                    top: 3.5px;
+                }
+            }
+            .action-box-right {
+                display: flex;
+                align-items: center;
+                padding-right: 10px;
+                .text-count {
+                    color: var(--klseis-color15);
+                    margin-right: 22px;
+                }
+                .submit-btn {
+                    width: 62px;
+                    height: 32px;
+                    background-color: var(--klseis-color30);
+                    color: var(--klseis-main-backgroud-color);
+                    border-radius: 4px;
+                    line-height: 31px;
+                    text-align: center;
+                    cursor: not-allowed;
+                    &.submit-btn-actived {
+                        background-color: var(--klseis-color17);
+                        cursor: pointer;
+                        
+                    }
+                    .arco-spin {
+                        width: auto !important;
+                        margin-left: -18px;
+                        height: auto;
+                        svg {
+                            color: #fff;
+                        }
+                    }
+                }
+            }
+        }
+        &:hover {
+            background-color: var(--klseis-color9);
+        }
+    }
+    .image-preview {
+        margin-top: 6px;
+        margin-bottom: 6px;
+        margin-left: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: start;
+        .uploaded-image {
+            width: 100px;
+            height: 60px;
+            margin-right: 12px;
+            background-color: var(--klseis-color7);
+            border: 1px solid var(--klseis-color8);
+
+            &:last-child {
+                margin-right: 0;
+            }
+            img {
+                width: 100px;
+                height: 60px;
+            }
+        }
+        .uploaded-image-container {
+            position: relative;
+        }
+        .remove-image-btn {
+            position: absolute;
+            right: 14px;
+            top: 4px;
+            cursor: pointer;
+        }
+    }
+}

@@ -1,0 +1,31 @@
+.modalContent {
+    top: 60px;
+    width: 300px;
+    .arco-modal-header {
+        display: none;
+    }
+    .arco-modal-content {
+        padding: 20px 20px 20px;
+        &::-webkit-scrollbar {
+            width: 6px !important;
+            background-color: transparent;
+        }
+        &::-webkit-scrollbar-thumb {
+            background-color: var(--klseis-color14);
+            border-radius: 6px;
+        }
+
+    }
+    .arco-modal-close-icon {
+        position: absolute;
+        right: 130px;
+        top: -42px;
+        background-color: #fff;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
