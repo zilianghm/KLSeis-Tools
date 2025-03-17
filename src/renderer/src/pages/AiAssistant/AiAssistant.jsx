@@ -350,6 +350,17 @@ export const AiAssistant = () => {
                             <div className='switchModelPopoverContent'>
                                 <div
                                     className={`switchModelPopoverContent-item ${
+                                        currentAiModelName === 'tencentHybrid'
+                                            ? 'switchModelPopoverContent-item-actived'
+                                            : ''
+                                    }
+                                    `}
+                                    onClick={() => setCurrentAiModelName('tencentHybrid')}
+                                >
+                                    {t('aiAssistant.tencentHybridModal')}
+                                </div>
+                                <div
+                                    className={`switchModelPopoverContent-item ${
                                         currentAiModelName === 'deepseekR1'
                                             ? 'switchModelPopoverContent-item-actived'
                                             : ''
@@ -369,17 +380,6 @@ export const AiAssistant = () => {
                                     onClick={() => setCurrentAiModelName('deepseekV3')}
                                 >
                                     {t('aiAssistant.deepSeeV3kModal')}
-                                </div>
-                                <div
-                                    className={`switchModelPopoverContent-item ${
-                                        currentAiModelName === 'tencentHybrid'
-                                            ? 'switchModelPopoverContent-item-actived'
-                                            : ''
-                                    }
-                                    `}
-                                    onClick={() => setCurrentAiModelName('tencentHybrid')}
-                                >
-                                    {t('aiAssistant.tencentHybridModal')}
                                 </div>
                             </div>
                         }

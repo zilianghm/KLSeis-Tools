@@ -84,3 +84,9 @@ export const getResourceData = () => {
         responseType: 'blob', // 设置响应类型为 blob 以处理文件下载
     })
 }
+
+// 获取更新资源数据
+export const getListKlSeisPackage = () => {
+    const url = `/klseis/panel/v1/package/listKlSeisPackage`
+    return requst.get(url)
+}

@@ -108,6 +108,15 @@
         "newSession": "新会话",
         "deepSeeR1kModal": "DeepSeek R1",
         "deepSeeV3kModal": "DeepSeek V3",
-        "tencentHybridModal": "腾讯混元"
-    }
+        "tencentHybridModal": "克浪智能体"
+    },
+    "localSoftwarePackage": "本地版本",
+    "remoteSoftwarePackage": "在线下载",
+    "download": "下载",
+    "cancel": "取消",
+    "downloadSuccess": "下载成功",
+    "downloadError": "下载失败",
+    "downloadCancelled": "已取消下载",
+    "installing": "安装中",
+    "installed": "已安装"
 }

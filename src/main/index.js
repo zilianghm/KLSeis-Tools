@@ -449,6 +449,136 @@ const handleDecompression = async (e, offlineZipPath, installationFolderPath) =>
     }
 }
 
+// 用于存储活跃的下载请求和文件句柄
+const downloadRequests = {}
+
+// 处理文件下载并支持断点续传
+const handleDownloadFile = async (e, fileUrl, tempFilePath, size) => {
+    try {
+        const fs = require('fs')
+        const https = require('https')
+        const http = require('http')
+        const path = require('path')
+        const url = require('url')
+
+        // 解析URL，确定使用http还是https
+        const parsedUrl = url.parse(fileUrl)
+        const requestModule = parsedUrl.protocol === 'https:' ? https : http
+
+        // 检查临时文件是否已经存在
+        let startByte = 0
+        let fileHandle
+
+        // 检查临时文件是否存在，如果存在则获取已下载的字节数
+        if (fs.existsSync(tempFilePath)) {
+            const stats = fs.statSync(tempFilePath)
+            startByte = stats.size
+            fileHandle = fs.createWriteStream(tempFilePath, { flags: 'a' }) // 追加模式
+        } else {
+            // 确保目录存在
+            const dir = path.dirname(tempFilePath)
+            console.log('目录:', dir, tempFilePath)
+            if (!fs.existsSync(dir)) {
+                fs.mkdirSync(dir, { recursive: true })
+            }
+            fileHandle = fs.createWriteStream(tempFilePath)
+        }
+
+        return new Promise((resolve, reject) => {
+            // 下载进度
+            let downloadedBytes = startByte
+            let lastProgressUpdate = Date.now()
+            const updateInterval = 500 // 每500毫秒更新一次进度
+
+            const options = {
+                headers: {},
+            }
+
+            // 设置Range头，支持断点续传
+            if (startByte > 0) {
+                options.headers['Range'] = `bytes=${startByte}-${size}`
+                console.log(`断点续传: 从字节 ${startByte} 开始下载`)
+            }
+
+            // 创建 AbortController 用于取消请求
+            const controller = new AbortController()
+            options.signal = controller.signal
+
+            // 发出请求
+            const request = requestModule.get(fileUrl, options, response => {
+                // 检查响应状态
+                if (response.statusCode !== 200 && response.statusCode !== 206) {
+                    fileHandle.close()
+                    return reject(new Error(`服务器响应错误: ${response.statusCode}`))
+                }
+
+                response.on('data', chunk => {
+                    downloadedBytes += chunk.length
+
+                    // 限制进度更新频率，避免过多的IPC通信
+                    const now = Date.now()
+                    if (now - lastProgressUpdate > updateInterval) {
+                        const progress = Math.floor((downloadedBytes / size) * 100)
+                        e.sender.send('download-progress', {
+                            url: fileUrl,
+                            progress: progress,
+                            downloadedBytes: downloadedBytes,
+                            totalBytes: size,
+                        })
+                        lastProgressUpdate = now
+                    }
+                })
+
+                response.on('end', () => {
+                    fileHandle.close()
+                    console.log('下载完成：', tempFilePath)
+
+                    // 下载完成后，将临时文件重命名为正式文件
+                    const finalFilePath = tempFilePath.replace('.downloading', '')
+                    fs.renameSync(tempFilePath, finalFilePath)
+
+                    e.sender.send('download-completed', {
+                        url: fileUrl,
+                        filePath: finalFilePath,
+                        success: true,
+                    })
+                    resolve({ success: true, filePath: finalFilePath })
+                })
+
+                response.on('error', err => {
+                    if (err.name === 'AbortError') return
+                    console.error('请求过程中发生错误:', err)
+                    reject(err)
+                    fileHandle.close()
+                })
+                response.pipe(fileHandle)
+            })
+
+            // 请求错误处理
+            request.on('error', err => {
+                if (err.name === 'AbortError') return
+                console.error('请求错误:', err)
+                reject(err)
+            })
+
+            // 将请求对象和控制器存储在全局变量中，以便可以从IPC消息处理程序中访问
+            downloadRequests[fileUrl] = {
+                request,
+                controller,
+                fileHandle,
+                resolve,
+            }
+        })
+    } catch (error) {
+        console.error('下载文件时发生错误:', error)
+        e.sender.send('download-error', {
+            url: fileUrl,
+            error: error.message,
+        })
+        return { success: false, error: error.message }
+    }
+}
+
 /* ************************************************************* windows 菜单栏托盘图标 ****************************************************************************** */
 let tray = null
 
@@ -807,4 +937,25 @@ app.whenReady().then(() => {
             return false
         }
     }) // 检查激活服务是否存在
+    ipcMain.handle('file:download', handleDownloadFile) // 断点续传下载离线包
+    // 监听取消下载请求
+    ipcMain.on('cancel-download', (event, cancelUrl) => {
+        console.log('主线程收到取消下载请求，URL:', cancelUrl)
+        if (downloadRequests[cancelUrl]) {
+            const { controller, fileHandle, resolve } = downloadRequests[cancelUrl]
+            // 使用 AbortController 取消请求
+            controller.abort()
+            try {
+                fileHandle.close() // 同步调用，不需要 catch
+            } catch (err) {
+                console.error('关闭文件句柄时发生错误:', err)
+            }
+            console.log('已经取消下载请求:', cancelUrl)
+            resolve({ success: false, cancelled: true })
+            delete downloadRequests[cancelUrl]
+            event.sender.send('download-cancelled', { url: cancelUrl })
+        } else {
+            console.log('未找到对应的下载请求:', cancelUrl)
+        }
+    })
 })

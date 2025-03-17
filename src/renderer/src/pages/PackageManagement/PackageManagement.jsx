@@ -2,16 +2,20 @@ import './PackageManagement.scss'
 import { useContextConsumer } from '../../ContextProvider'
 import { IconPlus, IconSync, IconSwap } from '@arco-design/web-react/icon'
 import { useTranslation } from 'react-i18next'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import CheckMarkIcon from '../../assets/img/checkMarkIcon.svg?react'
-import { Message, Popconfirm, Tooltip } from '@arco-design/web-react'
+import { Message, Popconfirm, Tooltip, Tabs, Collapse, Progress, Spin } from '@arco-design/web-react'
 import { waitTime } from '../../tools'
+const CollapseItem = Collapse.Item
+let close = null
 
 export const PackageManagement = ({ type }) => {
     const [selectItem, setSelectItem] = useState()
     const [installing, setInstalling] = useState(false)
     const [clickSync, setClickSync] = useState(false)
-    const { installationFolderPath, currentLocalPath, db, localVersionList, setAppList } = useContextConsumer()
+    const [downloadingFiles, setDownloadingFiles] = useState({})
+    const { installationFolderPath, currentLocalPath, db, localVersionList, setAppList, listKlSeisPackage } =
+        useContextConsumer()
     const { t } = useTranslation()
 
     // 同步 KLSeisApp 文件夹内版本数量
@@ -52,27 +56,128 @@ export const PackageManagement = ({ type }) => {
         }
     }
 
-    // 安装进度动画
-    useEffect(() => {
-        if (!installing) return
-        // 安装动画
-        const progressBar = document.querySelector('.install-icon-bar')
-        let progressInterval
-        let isEventEnded = false
-        let maxProgressBeforeEnd = 90 // 事件结束之前的最大进度
-        progressBar.style.width = '0' // 确保从 0 开始
-        let currentWidth = 0
+    const progressListener = useCallback((event, data) => {
+        setDownloadingFiles(prev => ({
+            ...prev,
+            [data.url]: {
+                ...prev[data.url],
+                progress: data.progress,
+                downloading: true,
+            },
+        }))
+    }, [])
 
-        // 模拟进度缓慢增加
-        progressInterval = setInterval(() => {
-            if (currentWidth < maxProgressBeforeEnd && !isEventEnded) {
-                currentWidth += 1 // 每次增加 1%
-                progressBar.style.width = currentWidth + '%'
+    // 下载完成
+    const completedListener = useCallback(async (event, data) => {
+        if (data.success) {
+            Message.success(t('downloadSuccess'))
+            setDownloadingFiles(prev => {
+                const updated = { ...prev }
+                delete updated[data.url]
+                return updated
+            })
+        }
+        console.log('下载成功，压缩包地址', data?.filePath)
+        if (data?.filePath) {
+            setInstalling(true)
+            const result = await window.electron.ipcRenderer.invoke(
+                'decompression',
+                data?.filePath,
+                installationFolderPath
+            )
+            if (!result.success) {
+                Message.error(result.message) // 解压报错
+                setInstalling(false)
+            } else {
+                handleSyncLocalVersionList() // 解压成功, 重新扫描版本号列表
+                setInstalling(false)
             }
-        }, 150) // 每 150ms 增加一次
-        // 清理函数：当组件卸载或安装结束时，清除定时器
+        }
+    }, [])
+
+    const errorListener = useCallback((event, data) => {
+        Message.error(`${t('downloadError')}: ${data.error}`)
+        setDownloadingFiles(prev => {
+            const updated = { ...prev }
+            if (updated[data.url]) {
+                updated[data.url].downloading = false
+                updated[data.url].error = data.error
+            }
+            return updated
+        })
+    }, [])
+
+    // 监听下载进度更新
+    useEffect(() => {
+        window.electron.ipcRenderer.on('download-progress', progressListener)
+        window.electron.ipcRenderer.on('download-completed', completedListener)
+        window.electron.ipcRenderer.on('download-error', errorListener)
+
         return () => {
-            clearInterval(progressInterval)
+            window.electron.ipcRenderer.removeListener('download-progress', progressListener)
+            window.electron.ipcRenderer.removeListener('download-completed', completedListener)
+            window.electron.ipcRenderer.removeListener('download-error', errorListener)
+        }
+    }, [])
+
+    // 开始下载文件
+    const handleDownload = async (fileUrl, fileName, fileSize) => {
+        try {
+            if (downloadingFiles[fileUrl]?.downloading) {
+                return Message.warning(t('downloadAlreadyInProgress'))
+            }
+
+            // 创建带有临时后缀的下载文件路径
+            const tempFilePath = `${fileName}.downloading`
+
+            // 更新当前文件的下载状态
+            setDownloadingFiles(prev => ({
+                ...prev,
+                [fileUrl]: {
+                    fileName,
+                    progress: 0,
+                    downloading: true,
+                    tempFilePath,
+                },
+            }))
+
+            // 调用主进程的下载函数
+            await window.electron.ipcRenderer.invoke('file:download', fileUrl, tempFilePath, fileSize)
+        } catch (error) {
+            console.error('下载时出错:', error)
+            Message.error(`${t('downloadError')}: ${error.message}`)
+            setDownloadingFiles(prev => {
+                const updated = { ...prev }
+                if (updated[fileUrl]) {
+                    updated[fileUrl].downloading = false
+                    updated[fileUrl].error = error.message
+                }
+                return updated
+            })
+        }
+    }
+
+    // 取消下载
+    const handleCancelDownload = fileUrl => {
+        window.electron.ipcRenderer.send('cancel-download', fileUrl)
+        setDownloadingFiles(prev => {
+            const updated = { ...prev }
+            delete updated[fileUrl]
+            return updated
+        })
+        Message.info(t('downloadCancelled'))
+    }
+
+    // 安装中
+    useEffect(() => {
+        if (installing) {
+            close = Message.info({
+                content: t('installing'),
+                duration: 0,
+                icon: <Spin block={false} style={{ height: 'auto' }} className='installing-spin' />,
+            })
+        } else {
+            close?.()
         }
     }, [installing])
 
@@ -130,6 +235,18 @@ export const PackageManagement = ({ type }) => {
         }
     }
 
+    // 判断是否已经安装
+    const isInstalled = child => {
+        const result = localVersionList.find(
+            p => p.base_package_version === child.packageVersion && p.base_package_name === child.packageName
+        )
+        if (result) {
+            return true
+        } else {
+            return false
+        }
+    }
+
     return (
         <div className={`packageManagement ${type === 'packageManagement' && 'packageManagementRouterPage'}`}>
             <div className='packageMangement-bgc'>
@@ -182,6 +299,7 @@ export const PackageManagement = ({ type }) => {
                                             setInstalling(false)
                                         } else {
                                             handleSyncLocalVersionList() // 解压成功, 重新扫描版本号列表
+                                            setInstalling(false)
                                         }
                                     }
                                 }}
@@ -189,36 +307,86 @@ export const PackageManagement = ({ type }) => {
                         </Tooltip>
                     </div>
                 </div>
-                {installing ? (
-                    <div className='importZipProgress'>
-                        <div className='install-icon-bar'></div>
-                    </div>
-                ) : (
-                    <></>
-                )}
             </div>
-            <div className='packageManagement-content'>
-                <div className='localVersionList'>
-                    {localVersionList?.length === 0 ? (
-                        <div className='localVersionList-empty'>{t('noSoftwarePackage2')}</div>
-                    ) : (
-                        <></>
-                    )}
-                    {localVersionList?.map((item, index) => (
-                        <div
-                            key={index}
-                            className={`packageManagement-content-item ${(selectItem || currentLocalPath) === item.directoryPath ? 'packageManagement-content-item-activation' : ''}`}
-                            onClick={() => setSelectItem(item.directoryPath)}
-                        >
-                            <div className='version-text'>
-                                <span className='version-text-version'>{item.base_package_version}</span>
-                                <span className='version-text-name'>{item.base_package_name}</span>
-                            </div>
-                            {locationVersionBtn(item)}
+            <Tabs defaultActiveTab='1' className='packageManagement-tabs'>
+                <Tabs.TabPane key='1' title={t('localSoftwarePackage')}>
+                    <div className='packageManagement-content'>
+                        <div className='localVersionList'>
+                            {localVersionList?.length === 0 ? (
+                                <div className='localVersionList-empty'>{t('noSoftwarePackage2')}</div>
+                            ) : (
+                                <></>
+                            )}
+                            {localVersionList?.map((item, index) => (
+                                <div
+                                    key={index}
+                                    className={`packageManagement-content-item ${(selectItem || currentLocalPath) === item.directoryPath ? 'packageManagement-content-item-activation' : ''}`}
+                                    onClick={() => setSelectItem(item.directoryPath)}
+                                >
+                                    <div className='version-text'>
+                                        <span className='version-text-version'>{item.base_package_version}</span>
+                                        <span className='version-text-name'>{item.base_package_name}</span>
+                                    </div>
+                                    {locationVersionBtn(item)}
+                                </div>
+                            ))}
                         </div>
-                    ))}
-                </div>
-            </div>
+                    </div>
+                </Tabs.TabPane>
+                <Tabs.TabPane key='2' title={t('remoteSoftwarePackage')}>
+                    <div className='remoteSoftwarePackage-content packageManagement-content'>
+                        <Collapse defaultActiveKey={['0', '1', '2']}>
+                            {listKlSeisPackage?.map((item, index) => (
+                                <CollapseItem
+                                    header={item.tag}
+                                    name={String(index + 1)}
+                                    key={String(index + 1)}
+                                    className='remoteSoftwarePackage-content-group'
+                                >
+                                    {item.children?.map((child, childIndex) => (
+                                        <div key={childIndex} className={`remoteSoftwarePackage-content-item`}>
+                                            <div className='version-text'>
+                                                <span className='version-text-version'>{child.packageVersion}</span>
+                                                <span className='version-text-name'>{child.packageName}</span>
+                                            </div>
+                                            {downloadingFiles[child.path] ? (
+                                                <div className='download-progress'>
+                                                    <Progress
+                                                        percent={downloadingFiles[child.path].progress}
+                                                        showText
+                                                        size='small'
+                                                        width={120}
+                                                    />
+                                                    <div
+                                                        className='cancel-download'
+                                                        onClick={() => handleCancelDownload(child.path)}
+                                                    >
+                                                        {t('cancel')}
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div
+                                                    className='download-text'
+                                                    onClick={() => {
+                                                        if (isInstalled(child)) return
+                                                        handleDownload(
+                                                            child.path,
+                                                            `${installationFolderPath}/${child.packageVersion}-${child.packageName}`,
+                                                            child.size
+                                                        )
+                                                    }}
+                                                >
+                                                    {isInstalled(child) ? t('installed') : t('download')}
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </CollapseItem>
+                            ))}
+                        </Collapse>
+                    </div>
+                </Tabs.TabPane>
+            </Tabs>
         </div>
     )
 }

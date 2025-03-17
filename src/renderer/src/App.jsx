@@ -27,6 +27,9 @@ import { useTranslation } from 'react-i18next'
 import { checkForUpdates, waitTime } from './tools'
 import dayjs from 'dayjs'
 
+import { getResourceData } from '../src/api'
+import md5 from 'md5'
+
 // 渲染更新日志
 const updaterLogsRenderer = releaseNote => {
     const { t } = useTranslation()
@@ -56,7 +59,7 @@ const updaterLogsRenderer = releaseNote => {
 }
 
 export const App = () => {
-    const { language, theme, navList, appList, currentLocalPath, loading, setDetectionPanelUpdateSync } =
+    const { language, theme, navList, appList, currentLocalPath, loading, setDetectionPanelUpdateSync, db } =
         useContextConsumer()
     const { t } = useTranslation()
     const [updateAvailable, setUpdateAvailable] = useState(false)
@@ -125,7 +128,52 @@ export const App = () => {
             window.electron.ipcRenderer.removeListener('error', handleUpdateError)
         }
     }, [])
-    useEffect(() => checkForUpdates(), []) // 初始化检测更新
+
+    // 初始化检测更新
+    useEffect(async () => {
+        if (!db) return
+        const oldSqlContentObj = await window.electron.ipcRenderer.invoke('read-put-sql-file')
+        getResourceData()
+            .then(response => {
+                // 创建一个 FileReader 对象
+                const reader = new FileReader()
+                // 将 Blob 对象读取为文本
+                reader.readAsText(new Blob([response.data]))
+                // 定义读取完成后的回调函数
+                reader.onload = async () => {
+                    if (!reader.result) return
+                    const newSqlContent = reader.result
+                    const oldSqlContent = oldSqlContentObj.content
+                    // 计算 MD5 值并比较
+                    const oldSqlHash = md5(oldSqlContent)
+                    const newSqlHash = md5(newSqlContent)
+                    if (oldSqlHash !== newSqlHash) {
+                        console.log(' SQL 内容新旧不一样，即将开始更新')
+                        // 发送 newSqlContent 到主进程
+                        const result = await window.electron.ipcRenderer.invoke('write-new-sql-content', newSqlContent)
+                        if (result.success) {
+                            await db.exec(newSqlContent) // 刷新数据库数据
+                            Message.success(t('resourceUpdateSuccess'))
+                            await waitTime(1000)
+                            // setDetectingDatabaseUpdatesSync(false)
+                            window.electron.ipcRenderer.send('restart-panel') // 重启面板刷新渲染器数据
+                        } else {
+                            Message.error(t('writeSqlFileError'))
+                        }
+                    } else {
+                        console.log(' SQL 内容新旧一样')
+                        Message.info(t('currentResourceIsLatestVersion'))
+                    }
+                    // setDetectingDatabaseUpdatesSync(false)
+                }
+            })
+            .catch(() => {
+                Message.error(t('resourceUpdateFailed'))
+                // setDetectingDatabaseUpdatesSync(false)
+            })
+
+        checkForUpdates()
+    }, [db])
 
     if (!loading) return <Spin dot block />
     if (!currentLocalPath) return <ConfigResources />

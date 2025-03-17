@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import { Message } from '@arco-design/web-react'
 import { getStroage } from './tools.js'
-import { postUserInfo, getDepartmentTree } from './api/index'
+import { postUserInfo, getDepartmentTree, getListKlSeisPackage } from './api/index'
 
 const Context = createContext()
 
@@ -34,6 +34,7 @@ export const ContextProvider = ({ db, children }) => {
 
     const [detectionPanelUpdateSync, setDetectionPanelUpdateSync] = useState(false) // 手动检测面板更新
     const [havActivateService, setHavActivateService] = useState(false) // 是否安装激活服务
+    const [listKlSeisPackage, setListKlSeisPackage] = useState([]) // 在线下载软件包列表
 
     console.log('一些重要渲染数据汇总', {
         installationFolderPath,
@@ -53,9 +54,28 @@ export const ContextProvider = ({ db, children }) => {
         isAppListReady,
         installingComplete,
         havActivateService,
+        listKlSeisPackage,
     })
 
     useEffect(() => getDepartmentTree().then(res => setDepartmentTree(res?.data?.data?.trees)), []) // 部门树
+    useEffect(
+        () =>
+            getListKlSeisPackage().then(res => {
+                const list = res?.data?.data?.list || []
+                const groupList = list.reduce((pre, cur) => {
+                    const tag = cur.tag
+                    const index = pre.findIndex(item => item.tag === tag)
+                    if (index === -1) {
+                        pre.push({ tag, children: [cur] })
+                    } else {
+                        pre[index].children.push(cur)
+                    }
+                    return pre
+                }, [])
+                setListKlSeisPackage(groupList)
+            }),
+        []
+    ) // 在线下载软件包列表
 
     useEffect(() => {
         window.electron.ipcRenderer
@@ -223,6 +243,7 @@ export const ContextProvider = ({ db, children }) => {
         setHavActivateService,
         aiSessionList,
         setAiSessionList,
+        listKlSeisPackage,
     }
     return <Context.Provider value={value}>{children}</Context.Provider>
 }

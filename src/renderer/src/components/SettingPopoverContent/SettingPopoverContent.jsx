@@ -1,17 +1,15 @@
 import './SettingPopoverContent.scss'
 import { IconSync } from '@arco-design/web-react/icon'
 import { useState } from 'react'
-import { checkForUpdates, waitTime } from '../../tools'
+import { checkForUpdates } from '../../tools'
 import { useContextConsumer } from '../../ContextProvider'
-import { getResourceData } from '../../api'
-import md5 from 'md5'
 import { Message } from '@arco-design/web-react'
 import { useTranslation } from 'react-i18next'
 
 export const SettingPopoverContent = () => {
-    const { detectionPanelUpdateSync, setDetectionPanelUpdateSync, db, setHavActivateService, havActivateService } =
+    const { detectionPanelUpdateSync, setDetectionPanelUpdateSync, setHavActivateService, havActivateService } =
         useContextConsumer()
-    const [detectingDatabaseUpdatesSync, setDetectingDatabaseUpdatesSync] = useState(false)
+    // const [detectingDatabaseUpdatesSync, setDetectingDatabaseUpdatesSync] = useState(false)
     const [installKLActivationServiceSync, setInstallKLActivationServiceSync] = useState(false)
     const { t } = useTranslation()
     return (
@@ -31,52 +29,11 @@ export const SettingPopoverContent = () => {
                     onClick={() => {}}
                 />
             </div>
-            <div
+            {/* <div
                 className='settingPopoverContent-item detectingDatabaseUpdates'
                 onClick={async () => {
                     setDetectingDatabaseUpdatesSync(true)
-                    const oldSqlContentObj = await window.electron.ipcRenderer.invoke('read-put-sql-file')
-                    getResourceData()
-                        .then(response => {
-                            // 创建一个 FileReader 对象
-                            const reader = new FileReader()
-                            // 将 Blob 对象读取为文本
-                            reader.readAsText(new Blob([response.data]))
-                            // 定义读取完成后的回调函数
-                            reader.onload = async () => {
-                                const newSqlContent = reader.result
-                                const oldSqlContent = oldSqlContentObj.content
-                                console.log('旧 SQL 内容:', oldSqlContent)
-                                console.log('新 SQL 内容:', newSqlContent)
-
-                                // 计算 MD5 值并比较
-                                const oldSqlHash = md5(oldSqlContent)
-                                const newSqlHash = md5(newSqlContent)
-                                if (oldSqlHash !== newSqlHash) {
-                                    // 发送 newSqlContent 到主进程
-                                    const result = await window.electron.ipcRenderer.invoke(
-                                        'write-new-sql-content',
-                                        newSqlContent
-                                    )
-                                    if (result.success) {
-                                        await db.exec(newSqlContent) // 刷新数据库数据
-                                        Message.success(t('resourceUpdateSuccess'))
-                                        await waitTime(1000)
-                                        setDetectingDatabaseUpdatesSync(false)
-                                        window.electron.ipcRenderer.send('restart-panel') // 重启面板刷新渲染器数据
-                                    } else {
-                                        Message.error(t('writeSqlFileError'))
-                                    }
-                                } else {
-                                    Message.info(t('currentResourceIsLatestVersion'))
-                                }
-                                setDetectingDatabaseUpdatesSync(false)
-                            }
-                        })
-                        .catch(() => {
-                            Message.error(t('resourceUpdateFailed'))
-                            setDetectingDatabaseUpdatesSync(false)
-                        })
+                    checkForDatabaseUpdates()
                 }}
             >
                 <div className='settingPopoverContent-item-title detectingDatabaseUpdates-title'>
@@ -86,7 +43,7 @@ export const SettingPopoverContent = () => {
                     className={`settingPopoverContent-item-sync detectingDatabaseUpdatesSync ${detectingDatabaseUpdatesSync ? 'detectingDatabaseUpdatesSync-sync' : ''}`}
                     onClick={() => {}}
                 />
-            </div>
+            </div> */}
             <div
                 className='settingPopoverContent-item installKLActivationService'
                 onClick={async () => {

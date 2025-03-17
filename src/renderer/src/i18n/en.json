@@ -108,6 +108,15 @@
         "newSession": "New Session",
         "deepSeeR1kModal": "DeepSeek R1",
         "deepSeeV3kModal": "DeepSeek V3",
-        "tencentHybridModal": "Tencent Hybrid"
-    }
+        "tencentHybridModal": "KLSeis Agent"
+    },
+    "localSoftwarePackage": "Local Version",
+    "remoteSoftwarePackage": "Online Download",
+    "download": "Download",
+    "cancel": "Cancel",
+    "downloadSuccess": "Download Success",
+    "downloadError": "Download Failed",
+    "downloadCancelled": "Download Cancelled",
+    "installing": "Installing",
+    "installed": "Installed"
 }
