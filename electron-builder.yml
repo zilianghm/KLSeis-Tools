@@ -50,6 +50,8 @@ appImage:
 npmRebuild: false
 publish:
     - provider: generic
+      url: http://120.46.165.219:18941/ # 华为 - 在线更新地址
+    - provider: generic
       url: http://39.98.219.240:8941/package/ # 阿里云 - 在线更新地址
     - provider: generic
       url: http://10.88.247.18:8083/package/  # 内网 - 在线更新地址

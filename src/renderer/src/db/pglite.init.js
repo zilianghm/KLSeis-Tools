@@ -5,6 +5,7 @@ import { Message } from '@arco-design/web-react'
 import { t } from 'i18next'
 
 export const pgliteInit = async () => {
+    const currentDataVersion = await window.api.getVersion()
     let db
     try {
         // 尝试创建或连接数据库
@@ -24,6 +25,9 @@ export const pgliteInit = async () => {
     try {
         // 尝试查询 'setting' 表，检查是否存在
         await db.query(`SELECT * FROM setting LIMIT 1;`)
+        await db.exec(`UPDATE setting
+            SET data_version = '${currentDataVersion}'
+            WHERE id = 1;`) // 没有选中版本，持久化记录
         console.log('数据库已存在，不用创建，开启程序')
     } catch (error) {
         // 如果查询失败，说明表不存在，执行初始化逻辑
@@ -53,8 +57,6 @@ export const pgliteInit = async () => {
                 "ai_session_list" text COLLATE "pg_catalog"."default"
                 );
                 ALTER TABLE "public"."setting" ADD CONSTRAINT "setting_pkey" PRIMARY KEY ("id");`)
-
-            const currentDataVersion = await window.api.getVersion()
 
             // 用户独立数据（加入数据），即程序的某些功能参数初始化
             await db.exec(
